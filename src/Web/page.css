@@ -1,0 +1,6 @@
+/* The rules of the mod on top of the rules of the tooltip lines library. The library draws the layout of a block;
+   only the look of the one line of this mod is here. */
+
+.it-tip-line {
+  font-variant-numeric: tabular-nums;
+}

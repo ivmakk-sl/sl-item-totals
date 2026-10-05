@@ -1,0 +1,1 @@
+Shows how many of each item you have at home in item tooltips.

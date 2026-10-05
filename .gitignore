@@ -1,0 +1,9 @@
+# Build output
+bin/
+obj/
+
+# Package artifacts
+dist/
+
+# Node dependencies
+node_modules/

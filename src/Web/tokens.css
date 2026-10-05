@@ -1,0 +1,12 @@
+/* The colors and the sizes of the mod, in one place. The tooltip lines library takes each of its values from an
+   --it-* variable here, so the library holds no color of its own. */
+
+:root {
+  --it-white: #fff;
+
+  /* One tooltip block of the mod: the lines below the lines of the game. */
+  --it-tip-fg: rgb(from var(--it-white) r g b / 85%);
+  --it-tip-rule: rgb(from var(--it-white) r g b / 12%);
+  --it-tip-size: 12px;
+  --it-tip-gap: 2px;
+}
