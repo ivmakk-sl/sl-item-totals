@@ -4,6 +4,8 @@ Item Totals adds `Total: N` to item tooltips in *Survival Log*, showing how many
 
 See the total while cooking, crafting, trading, or browsing storage. It also appears in the item detail popup and updates as items change. Supports English and Chinese.
 
+Nexus page: https://www.nexusmods.com/survivallog/mods/24
+
 ## What counts
 
 - Your backpack and regular home storage you can access.
