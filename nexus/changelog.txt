@@ -1,0 +1,2 @@
+v1.0.1 - 2026-10-08
+Fixed: Safer startup check at the title screen.
