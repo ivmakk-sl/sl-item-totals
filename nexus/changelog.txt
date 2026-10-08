@@ -1,0 +1,2 @@
+v1.0.1 - 2026-10-08
+Fixed: A return to the title screen from a save no longer starts the game world outside the game's own flow when an item changed as the save closed.

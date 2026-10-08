@@ -54,7 +54,7 @@ namespace ItemTotals.Totals
             var cache = itemState?.OwnerCache;
             if (cache == null) return NotReady("no item state in the store yet");
 
-            var world = BaseSingleton<BattleLogicWorld>.Instance;
+            var world = GameWorld.Current;
             if (world == null) return NotReady("no battle world yet");
             var agents = world._AgentManager;
             if (agents == null) return NotReady("no agent manager yet");

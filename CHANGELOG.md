@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-08
+
+### Fixed
+
+- After a return to the title screen from a save, the mod no longer makes the game start its game world outside the game's own flow. This could happen when an item changed while the save closed.
+
 ## [1.0.0] - 2026-10-05
 
 ### Added
