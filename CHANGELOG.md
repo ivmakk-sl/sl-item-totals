@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
-- A possible problem after a return to the title screen: the mod now reads the game world only after the game created it. No game run showed a problem from the old read.
+- Safer startup check at the title screen.
 
 ## [1.0.0] - 2026-10-05
 

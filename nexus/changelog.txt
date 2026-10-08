@@ -1,2 +1,2 @@
 v1.0.1 - 2026-10-08
-Fixed: A possible problem after a return to the title screen: the mod now reads the game world only after the game created it.
+Fixed: Safer startup check at the title screen.
