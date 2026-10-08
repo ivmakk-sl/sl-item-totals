@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
-- After a return to the title screen from a save, the mod no longer makes the game start its game world outside the game's own flow. This could happen when an item changed while the save closed.
+- A possible problem after a return to the title screen: the mod now reads the game world only after the game created it. No game run showed a problem from the old read.
 
 ## [1.0.0] - 2026-10-05
 
