@@ -5,7 +5,7 @@ namespace ItemTotals.Totals
     /// <summary>
     /// Holds the item totals of the last calculation, and the dirty bit that an item change sets.
     ///
-    /// The cost sits on an item change and never on a hover: the four invalidate patches set the bit, the tick
+    /// The cost sits on an item change and never on a hover: the invalidate patches set the bit, the tick
     /// calculates at most once for a frame, and the push goes out only when the data version moved. The two windows
     /// that build their text in C# do not wait for the tick, so they read through Read, which calculates first when
     /// the bit is set.
