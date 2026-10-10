@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-10-10
+
+### Fixed
+
+- The `Total:` line after a swap or a push of items, the drop onto an occupied cell of game 1.1.18385: it showed the count from before the move until the next item change.
+
 ## [1.0.1] - 2026-10-08
 
 ### Fixed

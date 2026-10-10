@@ -1,2 +1,5 @@
+v1.0.2 - 2026-10-10
+Fixed: The Total line now updates at once when you drop an item onto an occupied cell and the game swaps or pushes items away (new in game 1.1.18385).
+
 v1.0.1 - 2026-10-08
 Fixed: Safer startup check at the title screen.

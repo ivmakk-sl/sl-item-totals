@@ -8,7 +8,7 @@ using HarmonyLib;
 
 namespace ItemTotals
 {
-    [BepInPlugin(PluginGuid, "Item Totals", "1.0.1")]
+    [BepInPlugin(PluginGuid, "Item Totals", "1.0.2")]
     [BepInProcess("SurvivalLog.exe")]
     public sealed class Plugin : BasePlugin
     {
@@ -31,6 +31,8 @@ namespace ItemTotals
                 typeof(ItemTotals.Totals.InvalidateOnIncreaseItemCount),
                 typeof(ItemTotals.Totals.InvalidateOnDetachFromOwnerCaches),
                 typeof(ItemTotals.Totals.InvalidateOnCostItem),
+                typeof(ItemTotals.Totals.InvalidateOnSyncBothBags),
+                typeof(ItemTotals.Totals.InvalidateOnSyncSingleBag),
                 typeof(ItemTotals.Text.ToolTableTip),
                 typeof(ItemTotals.Text.ItemDetailTextOnOpen),
                 typeof(ItemTotals.Text.ItemDetailTextOnRefresh),
