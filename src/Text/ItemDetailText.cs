@@ -54,7 +54,8 @@ namespace ItemTotals.Text
                 //
                 // The send goes through the schedule and not straight out: this reducer runs before the root page
                 // builds the frame of the popup, so a send from here alone finds no frame.
-                string line = SlShared.I18n.I18nTexts.Fill(ModTexts.Current()[ModTexts.TotalLine], ("n", total));
+                string pattern = ModTexts.TotalLine();
+                string line = pattern == null ? "" : TextLogic.Fill(pattern, total);
                 Schedule.Open(line, UnityEngine.Time.realtimeSinceStartup);
                 Plugin.Debug("item detail " + where + ": config=" + configId + " total=" + total);
             }

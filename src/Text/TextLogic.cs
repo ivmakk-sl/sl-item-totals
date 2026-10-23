@@ -11,7 +11,7 @@ namespace ItemTotals.Text
     /// </summary>
     public static class TextLogic
     {
-        private const string Placeholder = "{n}";
+        internal const string Placeholder = "{n}";
 
         // One line break, so the line is the last line of the text. The page script of the mod moves it out of that
         // text again and draws it as a tooltip block with the rule of the library above it, as in each window that
@@ -38,13 +38,14 @@ namespace ItemTotals.Text
             return body.Length == 0 ? filled : body + Separator + filled;
         }
 
-        private static string Fill(string line, int total)
+        /// <summary>The line with the item total in the place of its placeholder.</summary>
+        public static string Fill(string line, int total)
         {
             return line.Replace(Placeholder, total.ToString());
         }
 
         // The text without a last line that this code wrote before. The line is recognised by the separator and the
-        // part of the text before the placeholder, which a translator owns and the number does not change.
+        // part of the text before the placeholder, which the game's text gives and the number does not change.
         private static string WithoutOldLine(string text, string line)
         {
             string head = Head(line);
@@ -54,7 +55,7 @@ namespace ItemTotals.Text
             return TrimEnd(text.Substring(0, at));
         }
 
-        // The part of the line before the placeholder, for example "Total: ". The whole line when it has none, so a
+        // The part of the line before the placeholder, for example "Usable at home: ". The whole line when it has none, so a
         // line text without a placeholder is still recognised on the next run.
         private static string Head(string line)
         {
@@ -65,6 +66,30 @@ namespace ItemTotals.Text
         private static string TrimEnd(string text)
         {
             return text.TrimEnd('\n', '\r');
+        }
+    }
+
+    /// <summary>
+    /// The label of the line: the game's own text of its count at home, "Usable at home: {0}" in English and
+    /// 家里可用：{0} in Chinese (game 1.1.19611 and later). The game's text, not one of the mod, so the line reads as
+    /// the game's line and follows the display language and each language pack that the game reads.
+    /// </summary>
+    public static class GameLabel
+    {
+        /// <summary>The constant text key of the game's line (BackpackUI.html, .tooltip-home).</summary>
+        public const string TextKey = "SR_Web_HomeStock_Usable";
+
+        private const string GamePlaceholder = "{0}";
+
+        /// <summary>
+        /// The pattern of the line from the game's text of the key, with the placeholder of the mod ({n}) in the
+        /// place of the game's {0}. Null when the game has no text of the key (an empty text, or the key itself),
+        /// which means no line.
+        /// </summary>
+        public static string LinePattern(string gameText)
+        {
+            if (string.IsNullOrEmpty(gameText) || gameText == TextKey) return null;
+            return gameText.Replace(GamePlaceholder, TextLogic.Placeholder);
         }
     }
 }

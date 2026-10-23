@@ -4,7 +4,7 @@
        This file names the plugin and adds the assemblies that only this mod uses. -->
   <PropertyGroup>
     <AssemblyName>ItemTotals</AssemblyName>
-    <Version>1.0.2</Version>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <!-- The page script is built from src/Web/ by Vite (package.json at the mod root) into one file,
@@ -19,8 +19,6 @@
     <PageSource Include="Shared\**\web\**" />
     <PageSource Include="$(ModRoot)\package.json;$(ModRoot)\package-lock.json;$(ModRoot)\vite.config.ts" />
     <EmbeddedResource Include="$(PageBundle)" LogicalName="ItemTotals.page.js" />
-    <!-- The i18n files of the mod texts, read by the i18n library copy. -->
-    <EmbeddedResource Include="i18n\*.json" LogicalName="ItemTotals.i18n.%(Filename)%(Extension)" />
   </ItemGroup>
 
   <Target Name="BuildPage" BeforeTargets="BeforeBuild" Inputs="@(PageSource)" Outputs="$(PageBundle)">

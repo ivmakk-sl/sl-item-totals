@@ -1,21 +1,23 @@
 # Item Totals
 
-Item Totals adds `Total: N` to item tooltips in *Survival Log*, showing how many you have in your backpack and all home storage combined.
+Item Totals adds `Usable at home: N` to item tooltips in *Survival Log*: how many you have in your backpack and all home storage combined.
 
-See the total while cooking, crafting, trading, or browsing storage. It also appears in the item detail popup and updates as items change. Supports English and Chinese.
+Since game 1.1.19611 the game shows this line itself in the storage, shop, and trade windows and in the recipe tooltips of the workbench. Item Totals adds the same line everywhere else: the cooking window, the workbench item tooltips, the material rack, the brewing, dye, and Rat Cage windows, the other station windows, and the item detail popup. Where the game shows its own line, the mod adds nothing, so you never see two numbers. The line uses the game's own text and green color, so it follows the game's language, also a community language pack, and updates as items change.
 
 Nexus page: https://www.nexusmods.com/survivallog/mods/24
 
 ## What counts
 
-- Your backpack and regular home storage you can access.
-- Dropped items and unpacked pockets from exploration are excluded.
+The same places as the game's own "Usable at home" count:
+
+- Your backpack and the home storage you can access.
+- Not counted, as in the game: a Brewing Barrel, a locked bag, a shredder hopper, a compressor bin, a dye vat, dropped items, and unpacked pockets from exploration.
 
 The mod only displays totals and adds nothing to your save. You can remove it at any time.
 
 ## Requirements
 
-- Survival Log 1.1.18293 or later.
+- Survival Log 1.1.19611 or later. On an older game version the line does not show.
 - The [BepInEx Pack for Survival Log](https://www.nexusmods.com/survivallog/mods/12), the BepInEx 6 (IL2CPP) build for the game.
 
 ## Install
@@ -30,7 +32,7 @@ Delete `ItemTotals.dll` from the `BepInEx\plugins` folder.
 
 ## Troubleshooting
 
-Tested on Survival Log 1.1.18293 (Steam build `25680222`) with BepInEx `6.0.0-be.788`.
+Tested on Survival Log 1.1.19611 (Steam build `26157732`) with BepInEx `6.0.0-be.788`.
 
 If a total is missing, check `BepInEx\LogOutput.log` for `Item Totals loaded.` and any warnings or errors. There are no player settings; `Verbose` in `BepInEx\config\com.ivmakk.survivallog.itemtotals.cfg` is for troubleshooting only.
 

@@ -66,8 +66,8 @@ namespace ItemTotals.Web
         /// The data of one push: the item total of each item, the item config id of each stack, the text of the line
         /// in the display language, the web pages to install into, and the data version.
         ///
-        /// The line text is a pattern with the item total as the placeholder {n}, so a translator owns the separator
-        /// and the order of the word and the number. The page fills it.
+        /// The line text is a pattern with the item total as the placeholder {n}: the game's text of its count at home,
+        /// which owns the separator and the order of the word and the number. The page fills it.
         ///
         /// The second map is for the item cells of the character in the trade window and in the shop window, which
         /// the game names by the item instance id only.

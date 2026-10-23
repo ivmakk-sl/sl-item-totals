@@ -40,7 +40,7 @@ namespace ItemTotals.Text
                 if (desc == null) return;
                 int total = totals.TotalOf(configId);
                 string before = desc.Value;
-                desc.Value = TextLogic.Append(before, ModTexts.Current()[ModTexts.TotalLine], total);
+                desc.Value = TextLogic.Append(before, ModTexts.TotalLine(), total);
                 Plugin.Debug("workbench tip: item=" + itemId + " config=" + configId + " total=" + total);
             }
             catch (Exception e)

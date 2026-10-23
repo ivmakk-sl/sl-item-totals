@@ -37,7 +37,7 @@ function store(w: Window): Store {
   return s;
 }
 
-// The part of the line text before the placeholder, for example "Total: ". C# writes the same text, so this is what
+// The part of the line text before the placeholder, for example "Usable at home: ". C# writes the same text, so this is what
 // finds the line in the tooltip text. An empty one finds nothing, which leaves the text as the game wrote it.
 function head(): string {
   const line = view.data && view.data.line;

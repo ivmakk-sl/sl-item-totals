@@ -1,3 +1,9 @@
+v1.1.0 - 2026-10-23
+Changed: The line reads "Usable at home: N", the game's own words, in the game's green, and follows the game's language and community language packs.
+Changed: Counts what the game counts: a Brewing Barrel, a locked bag, a shredder hopper, a compressor bin, and a dye vat are left out, as in the game.
+Changed: Where the game shows its own "Usable at home" line (the storage, shop, and trade windows), the mod adds nothing, so you never see two numbers.
+Removed: Support for game versions before 1.1.19611.
+
 v1.0.2 - 2026-10-10
 Fixed: The Total line now updates at once when you drop an item onto an occupied cell and the game swaps or pushes items away (new in game 1.1.18385).
 
