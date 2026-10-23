@@ -66,7 +66,7 @@ namespace ItemTotals.Web
                 if (Store.Totals.Current.Failed) return;
                 if (!schedule.Pending(now)) return;
                 var step = schedule.Tick(now, Store.Totals.Version, () =>
-                    PageJson.Build(Store.Totals.Current, ModTexts.Current()[ModTexts.TotalLine], Store.Totals.Version));
+                    PageJson.Build(Store.Totals.Current, ModTexts.TotalLine() ?? "", Store.Totals.Version));
                 if (step.Kind == PushSchedule.Kind.None) return;
                 PageScript.Send(step);
             }

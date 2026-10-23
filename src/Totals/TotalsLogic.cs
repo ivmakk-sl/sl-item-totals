@@ -1,19 +1,25 @@
+using System;
 using System.Collections.Generic;
 
 namespace ItemTotals.Totals
 {
-    /// <summary>One stack of the item pool, as plain data: which stack it is, which item, and how many.</summary>
+    /// <summary>
+    /// One stack of the item pool, as plain data: which stack it is, which item, how many, and the owner (the backpack
+    /// or a storage) that holds it.
+    /// </summary>
     public readonly struct PoolItem
     {
         public readonly long ItemId;
         public readonly int ConfigId;
         public readonly int Count;
+        public readonly long OwnerId;
 
-        public PoolItem(long itemId, int configId, int count)
+        public PoolItem(long itemId, int configId, int count, long ownerId = 0)
         {
             ItemId = itemId;
             ConfigId = configId;
             Count = count;
+            OwnerId = ownerId;
         }
     }
 
@@ -25,21 +31,25 @@ namespace ItemTotals.Totals
     public sealed class TotalSet
     {
         /// <summary>The answer when the item pool of the game cannot be read: no total, and the failure stated.</summary>
-        public static readonly TotalSet Failure = new TotalSet(new Dictionary<int, int>(), new Dictionary<long, int>(), true);
+        public static readonly TotalSet Failure = new TotalSet(new Dictionary<int, int>(), new Dictionary<long, int>(), true, 0);
 
-        public static readonly TotalSet Empty = new TotalSet(new Dictionary<int, int>(), new Dictionary<long, int>(), false);
+        public static readonly TotalSet Empty = new TotalSet(new Dictionary<int, int>(), new Dictionary<long, int>(), false, 0);
 
         private readonly Dictionary<int, int> _byConfigId;
         private readonly Dictionary<long, int> _configIdByItemId;
 
-        internal TotalSet(Dictionary<int, int> byConfigId, Dictionary<long, int> configIdByItemId, bool failed)
+        internal TotalSet(Dictionary<int, int> byConfigId, Dictionary<long, int> configIdByItemId, bool failed, int leftOutOwners)
         {
             _byConfigId = byConfigId;
             _configIdByItemId = configIdByItemId;
             Failed = failed;
+            LeftOutOwners = leftOutOwners;
         }
 
         public bool Failed { get; }
+
+        /// <summary>The count of the owners whose stacks the totals leave out, for the debug line of a rebuild.</summary>
+        public int LeftOutOwners { get; }
 
         public IReadOnlyDictionary<int, int> ByConfigId => _byConfigId;
 
@@ -80,20 +90,38 @@ namespace ItemTotals.Totals
         /// place list of the game can hold one place more than once. A stack with no item and a stack with no count
         /// are left out.
         /// </summary>
-        public static TotalSet Build(IEnumerable<PoolItem> items)
+        public static TotalSet Build(IEnumerable<PoolItem> items) => Build(items, null);
+
+        /// <summary>
+        /// The item totals as above, less the stacks of each owner that the rule leaves out: the rule of the game's
+        /// own count at home (ItemManager.IsExcludedFromCostPool). The rule is asked once for each owner. A left-out
+        /// stack still names its item in ConfigIdByItemId, so a web page that names it by its item instance id finds
+        /// its item. No rule counts each owner.
+        /// </summary>
+        public static TotalSet Build(IEnumerable<PoolItem> items, Func<long, bool> isLeftOut)
         {
             var byConfigId = new Dictionary<int, int>();
             var configIdByItemId = new Dictionary<long, int>();
-            if (items == null) return new TotalSet(byConfigId, configIdByItemId, false);
+            var leftOutByOwner = new Dictionary<long, bool>();
+            int leftOutOwners = 0;
+            if (items == null) return new TotalSet(byConfigId, configIdByItemId, false, 0);
             foreach (var item in items)
             {
                 if (item.ConfigId <= 0 || item.Count <= 0) continue;
                 if (configIdByItemId.ContainsKey(item.ItemId)) continue;
                 configIdByItemId[item.ItemId] = item.ConfigId;
+                bool leftOut;
+                if (!leftOutByOwner.TryGetValue(item.OwnerId, out leftOut))
+                {
+                    leftOut = isLeftOut != null && isLeftOut(item.OwnerId);
+                    leftOutByOwner[item.OwnerId] = leftOut;
+                    if (leftOut) leftOutOwners++;
+                }
+                if (leftOut) continue;
                 int total;
                 byConfigId[item.ConfigId] = byConfigId.TryGetValue(item.ConfigId, out total) ? total + item.Count : item.Count;
             }
-            return new TotalSet(byConfigId, configIdByItemId, false);
+            return new TotalSet(byConfigId, configIdByItemId, false, leftOutOwners);
         }
     }
 }

@@ -164,4 +164,82 @@ public class TotalsLogicTests
     {
         Assert.False(TotalSet.Failure.SameAs(TotalsLogic.Build(new PoolItem[0])));
     }
+
+    // The places that the game leaves out of its own count at home (ItemManager.IsExcludedFromCostPool: a Brewing
+    // Barrel, a locked bag, a shredder hopper, and more). The rule is passed in, so a later rule of the game reaches
+    // the mod with no change here.
+    private const long Backpack = 10, Fridge = 20, BrewingBarrel = 30;
+
+    private static PoolItem Stored(long ownerId, long itemId, int configId, int count) =>
+        new PoolItem(itemId, configId, count, ownerId);
+
+    [Fact]
+    public void LeavesOutTheStacksOfAnOwnerThatTheGameLeavesOut()
+    {
+        // The Watermelon of the samples of game 1.1.19611: 2 in the Fridge, 3 in the Brewing Barrel, the game says 2.
+        var totals = TotalsLogic.Build(new[]
+        {
+            Stored(Fridge, 1, 2539, 2),
+            Stored(BrewingBarrel, 2, 2539, 3),
+        }, owner => owner == BrewingBarrel);
+
+        Assert.Equal(2, totals.TotalOf(2539));
+    }
+
+    [Fact]
+    public void GivesZeroForAnItemThatOnlyALeftOutOwnerHolds()
+    {
+        var totals = TotalsLogic.Build(new[] { Stored(BrewingBarrel, 2, 2539, 3) }, owner => owner == BrewingBarrel);
+
+        Assert.Equal(0, totals.TotalOf(2539));
+        Assert.False(totals.ByConfigId.ContainsKey(2539));
+    }
+
+    [Fact]
+    public void KeepsTheItemOfAStackOfALeftOutOwnerKnown()
+    {
+        // A web page can name the stack by its item instance id only, and the line then still finds its item.
+        var totals = TotalsLogic.Build(new[] { Stored(BrewingBarrel, 2, 2539, 3) }, owner => owner == BrewingBarrel);
+
+        Assert.Equal(2539, totals.ConfigIdByItemId[2]);
+    }
+
+    [Fact]
+    public void AsksTheRuleOnceForEachOwner()
+    {
+        var asked = new List<long>();
+        TotalsLogic.Build(new[]
+        {
+            Stored(Backpack, 1, 101, 1),
+            Stored(Fridge, 2, 101, 1),
+            Stored(Fridge, 3, 202, 1),
+            Stored(BrewingBarrel, 4, 101, 1),
+            Stored(BrewingBarrel, 5, 202, 1),
+        }, owner => { asked.Add(owner); return owner == BrewingBarrel; });
+
+        Assert.Equal(new[] { Backpack, Fridge, BrewingBarrel }, asked);
+    }
+
+    [Fact]
+    public void CountsTheOwnersThatItLeavesOut()
+    {
+        var totals = TotalsLogic.Build(new[]
+        {
+            Stored(Backpack, 1, 101, 1),
+            Stored(BrewingBarrel, 2, 101, 1),
+            Stored(BrewingBarrel, 3, 202, 1),
+        }, owner => owner == BrewingBarrel);
+
+        Assert.Equal(1, totals.LeftOutOwners);
+        Assert.Equal(1, totals.TotalOf(101));
+    }
+
+    [Fact]
+    public void CountsEachOwnerWithNoRule()
+    {
+        var totals = TotalsLogic.Build(new[] { Stored(Fridge, 1, 101, 2), Stored(BrewingBarrel, 2, 101, 3) });
+
+        Assert.Equal(5, totals.TotalOf(101));
+        Assert.Equal(0, totals.LeftOutOwners);
+    }
 }

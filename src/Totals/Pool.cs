@@ -86,9 +86,13 @@ namespace ItemTotals.Totals
             // the owner id itself.
             if (Take(cache, WorkbenchDrawerConfig.DrawerOwnerId, pool)) owners++;
 
-            var totals = TotalsLogic.Build(pool);
+            // The game leaves some owners out of its own count at home ("Usable at home"): a Brewing Barrel, a locked
+            // bag, a shredder hopper, and more. The item total asks the same static rule of the game for each owner,
+            // so it gives the number that the game gives, also after a later game update adds an owner to the rule.
+            var totals = TotalsLogic.Build(pool, ItemManager.IsExcludedFromCostPool);
             lastNotReady = null;
-            Plugin.Debug("pool: storages=" + owners + " stacks=" + pool.Count + " item kinds=" + totals.ByConfigId.Count
+            Plugin.Debug("pool: storages=" + owners + " left out=" + totals.LeftOutOwners
+                         + " stacks=" + pool.Count + " item kinds=" + totals.ByConfigId.Count
                          + " frame=" + UnityEngine.Time.frameCount
                          + " timing: " + clock.Elapsed.TotalMilliseconds.ToString("F1") + " ms");
             return totals;
@@ -108,7 +112,7 @@ namespace ItemTotals.Totals
             {
                 var item = e.Current;
                 if (item == null) continue;
-                pool.Add(new PoolItem(item.LogicId, item.ItemConfigId, item.ItemCount));
+                pool.Add(new PoolItem(item.LogicId, item.ItemConfigId, item.ItemCount, ownerId));
             }
             return true;
         }

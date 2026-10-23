@@ -1,54 +1,38 @@
-using System;
-using System.Collections.Generic;
 using GameCore.HotUpdate;
-using SlShared.I18n;
+using ItemTotals.Text;
 
 namespace ItemTotals
 {
-    // The mod texts (src/i18n/) through the i18n library: this adapter reads the display language and writes the
-    // warnings of the library to the log. No other code of the mod reads the language.
-    //
-    // The mod names no text key. The library puts the game's text of a text key above the text of the i18n file, and
-    // the game's own word for this number is "Owned" (WebUI_PlantPanel_11, Chinese 持有), while the line shows
-    // "Total". So no game text reaches these texts, and the label is the mod's own in both languages.
+    // The label of the line: the game's own text of its count at home (GameLabel.TextKey), read through the text
+    // lookup of the game, which follows the display language and each language pack that the game reads. The mod has
+    // no text of its own. No other code of the mod reads the language.
     internal static class ModTexts
     {
-        // The name of the one mod text: the label of the line, with the item total as the placeholder {n}.
-        internal const string TotalLine = "total";
+        private static string loggedText;
+        private static bool warned;
 
-        private const int English = 1;
-
-        private static readonly I18nTexts texts = I18nTexts.Load(typeof(ModTexts).Assembly, "ItemTotals");
-        private static readonly HashSet<string> loggedLanguages = new HashSet<string>();
-        private static int warningsWritten;
-
-        // The LanguageType number of the display language (Chinese = 0, English = 1), English before the config loads.
-        internal static int Language()
-        {
-            try
-            {
-                var cache = ConfigManager.Instance?.customCache;
-                return cache != null ? (int)cache.LanguageType : English;
-            }
-            catch (Exception) { return English; }
-        }
-
-        // The mod texts in the display language. The language can change while the game runs, so the texts are read
+        // The pattern of the line with the item total as {n}, or null when the game has no text of the key (a game
+        // before 1.1.19611), which shows no line. The language can change while the game runs, so the text is read
         // again at each push.
-        internal static I18nTextSet Current()
+        internal static string TotalLine()
         {
-            int language = Language();
-            var set = texts.For(language, null, ((LanguageType)language).ToString());
-            if (Plugin.Verbose.Value && loggedLanguages.Add(set.Language))
-                Plugin.Log.LogDebug("Item Totals texts: language=" + set.Language + " " + TotalLine + "=\"" + set[TotalLine] + "\"");
-            WriteWarnings();
-            return set;
-        }
-
-        private static void WriteWarnings()
-        {
-            var warnings = texts.Warnings;
-            while (warningsWritten < warnings.Count) Plugin.Log.LogWarning("Item Totals: " + warnings[warningsWritten++]);
+            string gameText = ConstantTextTools.ToConstantTextOrEmpty(GameLabel.TextKey);
+            string line = GameLabel.LinePattern(gameText);
+            if (line == null)
+            {
+                if (!warned)
+                {
+                    warned = true;
+                    Plugin.Log.LogWarning("Item Totals: the game has no text for the text key " + GameLabel.TextKey + ": the line does not show.");
+                }
+                return null;
+            }
+            if (Plugin.Verbose.Value && loggedText != gameText)
+            {
+                loggedText = gameText;
+                Plugin.Log.LogDebug("Item Totals label: " + GameLabel.TextKey + "=\"" + gameText + "\"");
+            }
+            return line;
         }
     }
 }

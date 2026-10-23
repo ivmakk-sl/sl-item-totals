@@ -2,9 +2,9 @@
 export interface PageData {
   // The data version. The page sends it back, so C# knows which data the page holds.
   v: number;
-  // The text of the line in the display language of the game, with the item total as the placeholder {n}. A
-  // translator owns the separator and the order of the word and the number, so the page fills the placeholder and
-  // never builds the text itself.
+  // The text of the line in the display language of the game, with the item total as the placeholder {n}: the game's
+  // text of its count at home, which owns the separator and the order of the word and the number, so the page fills
+  // the placeholder and never builds the text itself. Empty when the game has no such text: no line then.
   line: string;
   // True when the item pool of the game could not be read. The mod then shows no line at all.
   failed?: boolean;

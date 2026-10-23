@@ -124,6 +124,36 @@ test('the line shows Total: 0 for an item that the character holds none of', asy
   assert.equal(block(frame)!.textContent, 'Total: 0');
 });
 
+// From game 1.1.19611 the web page shows its own count at home (.tooltip-home) for each item that its home stock
+// message holds. The page takes a message as a window message event of the bridge (webui-core.js).
+function homeStock(frame: Win, stock: Record<string, { u: number; w: unknown[] }>): void {
+  frame.dispatchEvent(new frame.MessageEvent('message', { data: { type: 'WebUI_Backpack_HomeStockMsg', data: { homeStockJson: JSON.stringify(stock) } } }));
+}
+
+test('where the game shows its own count at home, the tooltip has no line of the mod', async (t) => {
+  const frame = await loadFrame(t, 'BackpackUI');
+  const root = rootWindow(t, { BackpackUI: frame });
+  setData(root, data());
+  homeStock(frame, { '101': { u: 12, w: [] } });
+
+  await hover(frame, { id: 9001, cfgId: 101, name: 'Hardtack' });
+
+  assert.ok(frame.document.querySelector('div.tooltip .tooltip-home'), 'the line of the game');
+  assert.equal(block(frame), null);
+});
+
+test('an item with no count of the game keeps the line of the mod', async (t) => {
+  const frame = await loadFrame(t, 'BackpackUI');
+  const root = rootWindow(t, { BackpackUI: frame });
+  setData(root, data());
+  homeStock(frame, { '101': { u: 12, w: [] } });
+
+  await hover(frame, { id: 9002, cfgId: 202, name: 'Canned Fish' });
+
+  assert.equal(frame.document.querySelector('div.tooltip .tooltip-home'), null);
+  assert.equal(block(frame)!.textContent, 'Total: 0');
+});
+
 // The shop window sends an item cell of the character with its item instance id only, so the line has to find the
 // item config id in the id map of the push.
 test('an item cell named by its item instance id finds its item through the id map', async (t) => {
@@ -266,6 +296,23 @@ test('the style node of the mod goes into the frame once', async (t) => {
   assert.match(css, /--it-tip-fg:/);
 });
 
+// The line takes the look of the game's own line of its count at home (.tooltip-home of BackpackUI.html, game
+// 1.1.19611): green #9ccc65, 12px, and a rule of white at 12% above it. The cooking window shows no count of the
+// game, so the line of the mod shows there. jsdom computes no color from var(), so the test reads the CSS text.
+test('the line takes the look of the game line of the count at home', async (t) => {
+  const frame = await loadFrame(t, 'Cooking');
+  const root = rootWindow(t, { Cooking: frame });
+
+  setData(root, data({ pages: ['Cooking'] }));
+  runPageJs(root, 'window.__itemtotals.apply()');
+
+  const css = frame.document.getElementById('itemtotals-style')!.textContent as string;
+  assert.match(css, /--it-home-green:\s*#9ccc65;/);
+  assert.match(css, /--it-tip-fg:\s*var\(--it-home-green\);/);
+  assert.match(css, /--it-tip-size:\s*12px;/);
+  assert.match(css, /--it-tip-rule:\s*rgb\(from var\(--it-white\) r g b \/ 12%\);/);
+});
+
 test('apply with no data yet answers frames 0 and draws nothing', async (t) => {
   const frame = await loadFrame(t, 'BackpackUI');
   const root = rootWindow(t, { BackpackUI: frame });
@@ -277,8 +324,8 @@ test('apply with no data yet answers frames 0 and draws nothing', async (t) => {
   assert.equal(block(frame), null);
 });
 
-// The line text comes from the i18n files of the mod with the item total as {n}, so the word, the separator, and the
-// order of the word and the number are a translator's.
+// The line text is the game's text of its count at home with the item total as {n}, so the word, the separator, and
+// the order of the word and the number are the game's.
 test('the page fills {n} with the item total, wherever it sits in the text', async (t) => {
   const frame = await loadFrame(t, 'BackpackUI');
   const root = rootWindow(t, { BackpackUI: frame });
@@ -297,6 +344,18 @@ test('the Chinese text of the line fills the same way', async (t) => {
   await hover(frame, { id: 9001, cfgId: 101, name: 'Hardtack' });
 
   assert.equal(block(frame)!.textContent, '持有: 15');
+});
+
+// A game with no text of the key of the label (before 1.1.19611): C# sends an empty line text, and the tooltip has
+// no line, not an empty block.
+test('an empty line text gives no line', async (t) => {
+  const frame = await loadFrame(t, 'BackpackUI');
+  const root = rootWindow(t, { BackpackUI: frame });
+  setData(root, data({ line: '' }));
+
+  await hover(frame, { id: 9001, cfgId: 101, name: 'Hardtack' });
+
+  assert.equal(block(frame), null);
 });
 
 test('a text with no placeholder shows as it is, so a broken i18n file cannot break the tooltip', async (t) => {

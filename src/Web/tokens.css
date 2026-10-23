@@ -3,9 +3,12 @@
 
 :root {
   --it-white: #fff;
+  /* The green of the game's own line of its count at home (.tooltip-home of BackpackUI.html, game 1.1.19611). */
+  --it-home-green: #9ccc65;
 
-  /* One tooltip block of the mod: the lines below the lines of the game. */
-  --it-tip-fg: rgb(from var(--it-white) r g b / 85%);
+  /* One tooltip block of the mod: the lines below the lines of the game, in the look of the game's line of its count
+     at home (its color, its size, and the rule above it). */
+  --it-tip-fg: var(--it-home-green);
   --it-tip-rule: rgb(from var(--it-white) r g b / 12%);
   --it-tip-size: 12px;
   --it-tip-gap: 2px;
