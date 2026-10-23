@@ -1,1 +1,1 @@
-Shows how many of each item you can use at home in every item tooltip, not only where the game shows it.
+Shows how many of each item you can use at home in every item tooltip.
