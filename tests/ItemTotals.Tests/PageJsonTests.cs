@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using ItemTotals.Totals;
+using SlShared.ItemPool;
 using ItemTotals.Web;
 using Xunit;
 

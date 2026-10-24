@@ -1,7 +1,8 @@
+// Library copy of shared/item-pool 1.0.0. Do not edit: see src/Shared/item-pool/VERSION.
 using GameCore.HotUpdate.Battle.Logic;
 using HarmonyLib;
 
-namespace ItemTotals.Totals
+namespace SlShared.ItemPool
 {
     // Every change of the per-owner item cache of the game reaches one of the methods below, and the pool read goes
     // to that same cache. So an item that enters it, leaves it, or changes its count in place cannot miss the dirty
@@ -36,8 +37,9 @@ namespace ItemTotals.Totals
     // with no error and never run. Not ItemManager.OnMoveItem either: a plain move goes through the cache add, and a smart drop
     // through the syncs above.
     //
-    // All but CostItem are private, which Harmony patches, and each one is attached on its own in Plugin.Load, so a
-    // method missing after a game update turns off only its own hook and the log names it.
+    // All but CostItem are private, which Harmony patches, and each mod attaches each one on its own in its Load
+    // (ItemPool.PatchTypes), so a method missing after a game update turns off only its own hook in that mod and the
+    // log names it.
 
     [HarmonyPatch(typeof(ItemManager), "AddItemToOwnerCache")]
     internal static class InvalidateOnAddToOwnerCache
@@ -45,7 +47,7 @@ namespace ItemTotals.Totals
         [HarmonyPostfix]
         private static void Postfix(long ownerId, ItemData item)
         {
-            Store.MarkDirty("AddItemToOwnerCache", item, ownerId);
+            ItemPool.MarkDirty("AddItemToOwnerCache", item, ownerId);
         }
     }
 
@@ -55,7 +57,7 @@ namespace ItemTotals.Totals
         [HarmonyPostfix]
         private static void Postfix(ItemData item, int delta)
         {
-            Store.MarkDirty("IncreaseItemCount +" + delta, item, item == null ? 0 : item.OwnerId);
+            ItemPool.MarkDirty("IncreaseItemCount +" + delta, item, item == null ? 0 : item.OwnerId);
         }
     }
 
@@ -65,7 +67,7 @@ namespace ItemTotals.Totals
         [HarmonyPostfix]
         private static void Postfix(ItemData itemData, long expectedOwnerId)
         {
-            Store.MarkDirty("DetachItemFromOwnerCaches", itemData, expectedOwnerId);
+            ItemPool.MarkDirty("DetachItemFromOwnerCaches", itemData, expectedOwnerId);
         }
     }
 
@@ -75,7 +77,7 @@ namespace ItemTotals.Totals
         [HarmonyPostfix]
         private static void Postfix(long ownerId, long itemId, int count)
         {
-            Store.MarkDirty("CostItem -" + count, null, ownerId, itemId);
+            ItemPool.MarkDirty("CostItem -" + count, null, ownerId, itemId);
         }
     }
 
@@ -85,7 +87,7 @@ namespace ItemTotals.Totals
         [HarmonyPostfix]
         private static void Postfix(long fromOwnerId, long toOwnerId)
         {
-            Store.MarkDirty("SyncBothBags to=" + toOwnerId, null, fromOwnerId);
+            ItemPool.MarkDirty("SyncBothBags to=" + toOwnerId, null, fromOwnerId);
         }
     }
 
@@ -95,7 +97,7 @@ namespace ItemTotals.Totals
         [HarmonyPostfix]
         private static void Postfix(long ownerId)
         {
-            Store.MarkDirty("SyncSingleBag", null, ownerId);
+            ItemPool.MarkDirty("SyncSingleBag", null, ownerId);
         }
     }
 }

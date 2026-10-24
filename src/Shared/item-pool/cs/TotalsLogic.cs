@@ -1,13 +1,14 @@
+// Library copy of shared/item-pool 1.0.0. Do not edit: see src/Shared/item-pool/VERSION.
 using System;
 using System.Collections.Generic;
 
-namespace ItemTotals.Totals
+namespace SlShared.ItemPool
 {
     /// <summary>
     /// One stack of the item pool, as plain data: which stack it is, which item, how many, and the owner (the backpack
     /// or a storage) that holds it.
     /// </summary>
-    public readonly struct PoolItem
+    internal readonly struct PoolItem
     {
         public readonly long ItemId;
         public readonly int ConfigId;
@@ -28,7 +29,7 @@ namespace ItemTotals.Totals
     /// and the item config id of each stack. The second map is for the item cells of the character in the trade
     /// window and in the shop window, which the game names by the item instance id only.
     /// </summary>
-    public sealed class TotalSet
+    internal sealed class TotalSet
     {
         /// <summary>The answer when the item pool of the game cannot be read: no total, and the failure stated.</summary>
         public static readonly TotalSet Failure = new TotalSet(new Dictionary<int, int>(), new Dictionary<long, int>(), true, 0);
@@ -83,7 +84,7 @@ namespace ItemTotals.Totals
     }
 
     /// <summary>The count of the stacks of the item pool, with no game type in it.</summary>
-    public static class TotalsLogic
+    internal static class TotalsLogic
     {
         /// <summary>
         /// The item totals of the stacks of the pool. A stack that the game names twice counts once, because the

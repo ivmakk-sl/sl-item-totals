@@ -5,6 +5,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
+using SlShared.ItemPool;
 
 namespace ItemTotals
 {
@@ -24,15 +25,10 @@ namespace ItemTotals
             Verbose = Config.Bind(
                 "General", "Verbose", false,
                 "Log each item total calculation, each send to a window, and the page-script detail at Debug level. Keep off in normal play.");
+            ItemPool.Setup(Debug, () => Verbose.Value);
             Harmony = new Harmony(PluginGuid);
-            var patches = new List<Type>
+            var patches = new List<Type>(ItemPool.PatchTypes)
             {
-                typeof(ItemTotals.Totals.InvalidateOnAddToOwnerCache),
-                typeof(ItemTotals.Totals.InvalidateOnIncreaseItemCount),
-                typeof(ItemTotals.Totals.InvalidateOnDetachFromOwnerCaches),
-                typeof(ItemTotals.Totals.InvalidateOnCostItem),
-                typeof(ItemTotals.Totals.InvalidateOnSyncBothBags),
-                typeof(ItemTotals.Totals.InvalidateOnSyncSingleBag),
                 typeof(ItemTotals.Text.ToolTableTip),
                 typeof(ItemTotals.Text.ItemDetailTextOnOpen),
                 typeof(ItemTotals.Text.ItemDetailTextOnRefresh),

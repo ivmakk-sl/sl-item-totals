@@ -1,6 +1,7 @@
+// Library copy of shared/item-pool 1.0.0. Do not edit: see src/Shared/item-pool/VERSION.
 using System;
 
-namespace ItemTotals.Totals
+namespace SlShared.ItemPool
 {
     /// <summary>
     /// Holds the item totals of the last calculation, and the dirty bit that an item change sets.
@@ -10,7 +11,7 @@ namespace ItemTotals.Totals
     /// that build their text in C# do not wait for the tick, so they read through Read, which calculates first when
     /// the bit is set.
     /// </summary>
-    public sealed class TotalsStore
+    internal sealed class TotalsStore
     {
         private TotalSet _current = TotalSet.Empty;
         private bool _dirty = true;

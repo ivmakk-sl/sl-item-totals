@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SlShared.Json;
-using ItemTotals.Totals;
+using SlShared.ItemPool;
 
 namespace ItemTotals.Web
 {
@@ -72,7 +72,7 @@ namespace ItemTotals.Web
         /// The second map is for the item cells of the character in the trade window and in the shop window, which
         /// the game names by the item instance id only.
         /// </summary>
-        public static string Build(TotalSet totals, string line, int version)
+        internal static string Build(TotalSet totals, string line, int version)
         {
             var sb = new StringBuilder(256 + totals.ConfigIdByItemId.Count * 16);
             sb.Append("{\"v\":").Append(JsonText.Num(version));

@@ -1,3 +1,4 @@
+// Library copy of shared/item-pool 1.0.0. Do not edit: see src/Shared/item-pool/VERSION.
 using System;
 using System.Collections.Generic;
 using GameCore.HotUpdate;
@@ -5,7 +6,7 @@ using GameCore.HotUpdate.Battle.Logic;
 using GameCore.HotUpdate.ReduxUI;
 using Il2CppInterop.Runtime;
 
-namespace ItemTotals.Totals
+namespace SlShared.ItemPool
 {
     /// <summary>
     /// Reads the item pool: the backpack of the character and each home storage, by the game's own home scope rule.
@@ -54,7 +55,7 @@ namespace ItemTotals.Totals
             var cache = itemState?.OwnerCache;
             if (cache == null) return NotReady("no item state in the store yet");
 
-            var world = GameWorld.Current;
+            var world = World;
             if (world == null) return NotReady("no battle world yet");
             var agents = world._AgentManager;
             if (agents == null) return NotReady("no agent manager yet");
@@ -91,7 +92,8 @@ namespace ItemTotals.Totals
             // so it gives the number that the game gives, also after a later game update adds an owner to the rule.
             var totals = TotalsLogic.Build(pool, ItemManager.IsExcludedFromCostPool);
             lastNotReady = null;
-            Plugin.Debug("pool: storages=" + owners + " left out=" + totals.LeftOutOwners
+            if (ItemPool.Verbose)
+                ItemPool.Debug("pool: storages=" + owners + " left out=" + totals.LeftOutOwners
                          + " stacks=" + pool.Count + " item kinds=" + totals.ByConfigId.Count
                          + " frame=" + UnityEngine.Time.frameCount
                          + " timing: " + clock.Elapsed.TotalMilliseconds.ToString("F1") + " ms");
@@ -124,9 +126,15 @@ namespace ItemTotals.Totals
             if (lastNotReady != why)
             {
                 lastNotReady = why;
-                Plugin.Debug("pool: " + why);
+                ItemPool.Debug("pool: " + why);
             }
             return TotalSet.Failure;
         }
+
+        // The battle world of the game, or null before the game creates it. BaseSingleton.Instance creates the world
+        // when it does not exist yet, so a read of Instance from a frame hook at the title screen built a world
+        // outside the game's flow, again on each frame while its constructor failed.
+        private static BattleLogicWorld World =>
+            BaseSingleton<BattleLogicWorld>.IsInstanceCreated ? BaseSingleton<BattleLogicWorld>.Instance : null;
     }
 }
