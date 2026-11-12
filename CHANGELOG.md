@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+- The tooltip of an offered row in the trade window shows `Usable at home: 0` again for an item that you do not have at home. Game 1.1.21271 places that tooltip next to the row, and the line no longer showed there.
+
 ## [1.1.0] - 2026-10-23
 
 ### Changed
